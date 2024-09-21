@@ -82,4 +82,38 @@ func main() {
 
 	fmt.Println("Category found by ID:", foundCat)
 
+	// ----------------------------
+	// Create a topic
+
+	topicRepo := persistence.NewTopicMemoryRepo()
+	topicService := services.NewTopicService(topicRepo)
+
+	topic, err := topicService.CreateTopic("Topic 1", "Rich content 1", newUser.ID)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Topic created successfully")
+
+	// Add a message to the topic
+
+	err = topicService.AddMessage(topic.ID.String(), "Message 1", newUser.ID)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Message added successfully")
+
+	// Find the topic by ID
+
+	foundTopic, err := topicService.GetTopicByID(topic.ID.String())
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Topic found by ID:", foundTopic)
+
 }
