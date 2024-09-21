@@ -1,4 +1,4 @@
-package boilerplateforumddd
+package category
 
 import (
 	"time"
