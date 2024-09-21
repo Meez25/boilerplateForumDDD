@@ -48,3 +48,24 @@ func (s *CategoryService) FindByID(ID string) (*category.Category, error) {
 
 	return &category, nil
 }
+
+func (s *CategoryService) AddSubCategory(parentID, subCategoryID string) error {
+	parentCategory, err := s.repo.FindByID(parentID)
+	if err != nil {
+		return err
+	}
+
+	subCategory, err := s.repo.FindByID(subCategoryID)
+	if err != nil {
+		return err
+	}
+
+	subCategory.SetParentID(&parentCategory.ID)
+
+	err = s.repo.Save(subCategory)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -56,4 +56,30 @@ func main() {
 
 	fmt.Println("Category found by ID:", foundCat)
 
+	// Add a subcategory
+
+	subCat, err := categoryService.Create("Subcategory 1", "Subcategory description 1", nil)
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = categoryService.AddSubCategory(cat.ID.String(), subCat.ID.String())
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Subcategory added successfully")
+
+	// Find the category by ID
+
+	foundCat, err = categoryService.FindByID(subCat.ID.String())
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Category found by ID:", foundCat)
+
 }
