@@ -1,4 +1,4 @@
-package category
+package forum
 
 import (
 	"errors"
@@ -16,17 +16,17 @@ type Category struct {
 }
 
 var (
-	ErrEmptyTitle         = errors.New("title can't be empty")
-	ErrorEmptyDescription = errors.New("description can't be empty")
+	ErrEmptyCategoryTitle         = errors.New("title can't be empty")
+	ErrorEmptyCategoryDescription = errors.New("description can't be empty")
 )
 
 func NewCategory(title, description string, parentID *uuid.UUID) (*Category, error) {
 	if title == "" {
-		return nil, ErrEmptyTitle
+		return nil, ErrEmptyCategoryTitle
 	}
 
 	if description == "" {
-		return nil, ErrorEmptyDescription
+		return nil, ErrorEmptyCategoryDescription
 	}
 
 	return &Category{
@@ -44,7 +44,7 @@ func (c *Category) Update(title, description string) error {
 	}
 
 	if description == "" {
-		return ErrorEmptyDescription
+		return ErrorEmptyCategoryDescription
 	}
 
 	c.Title = title

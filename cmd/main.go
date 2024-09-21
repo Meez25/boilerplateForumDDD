@@ -12,7 +12,7 @@ func main() {
 	userService := services.NewUserService(userRepo)
 
 	// Create a new user
-	newUser, err := userService.Create("John Doe", "johnDoe@doe.com", "password", "john", "doe")
+	newUser, err := userService.Create("John Doe", "johnDoe@doe.com", "password", "john", "doe", "profile.jpg")
 
 	// Save the user
 	err = userService.Register(newUser)

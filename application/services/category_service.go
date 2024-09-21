@@ -2,20 +2,20 @@ package services
 
 import (
 	"github.com/google/uuid"
-	"github.com/meez25/boilerplateForumDDD/internal/category"
+	"github.com/meez25/boilerplateForumDDD/internal/forum"
 )
 
 type CategoryService struct {
-	repo category.CategoryRepository
+	repo forum.CategoryRepository
 }
 
-func NewCategoryService(repo category.CategoryRepository) *CategoryService {
+func NewCategoryService(repo forum.CategoryRepository) *CategoryService {
 	return &CategoryService{
 		repo: repo,
 	}
 }
 
-func (s *CategoryService) Create(title, description string, parentID *string) (*category.Category, error) {
+func (s *CategoryService) Create(title, description string, parentID *string) (*forum.Category, error) {
 	var parentIDUUID *uuid.UUID
 
 	if parentID != nil {
@@ -27,7 +27,7 @@ func (s *CategoryService) Create(title, description string, parentID *string) (*
 		parentIDUUID = &id
 	}
 
-	newCategory, err := category.NewCategory(title, description, parentIDUUID)
+	newCategory, err := forum.NewCategory(title, description, parentIDUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (s *CategoryService) Create(title, description string, parentID *string) (*
 	return newCategory, nil
 }
 
-func (s *CategoryService) FindByID(ID string) (*category.Category, error) {
+func (s *CategoryService) FindByID(ID string) (*forum.Category, error) {
 	category, err := s.repo.FindByID(ID)
 	if err != nil {
 		return nil, err

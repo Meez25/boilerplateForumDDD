@@ -5,17 +5,17 @@ import (
 )
 
 type UserService struct {
-	repo user.Repository
+	repo user.UserRepository
 }
 
-func NewUserService(repo user.Repository) *UserService {
+func NewUserService(repo user.UserRepository) *UserService {
 	return &UserService{
 		repo: repo,
 	}
 }
 
-func (s *UserService) Create(username, email, password string, firstName string, lastName string) (user.User, error) {
-	u, err := user.NewUser(username, email, password, firstName, lastName)
+func (s *UserService) Create(username, email, password string, firstName string, lastName string, profilePicture string) (user.User, error) {
+	u, err := user.NewUser(username, email, password, firstName, lastName, profilePicture)
 
 	if err != nil {
 		return user.User{}, err

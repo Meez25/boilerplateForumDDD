@@ -14,6 +14,7 @@ type User struct {
 	Password     string
 	FirstName    string
 	LastName     string
+	ProfilePic   string
 	CreatedAt    time.Time
 }
 
@@ -23,7 +24,7 @@ var (
 	ErrEmptyPassword = errors.New("password can't be empty")
 )
 
-func NewUser(username, email, password, firstName, lastName string) (User, error) {
+func NewUser(username, email, password, firstName, lastName string, profilePicture string) (User, error) {
 	id, err := uuid.NewRandom()
 	if err != nil {
 		return User{}, err
@@ -47,6 +48,7 @@ func NewUser(username, email, password, firstName, lastName string) (User, error
 		EmailAddress: email,
 		Password:     password,
 		FirstName:    firstName,
+		ProfilePic:   profilePicture,
 		LastName:     lastName,
 		CreatedAt:    time.Now(),
 	}, nil

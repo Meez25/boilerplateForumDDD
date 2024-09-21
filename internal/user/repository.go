@@ -1,6 +1,6 @@
 package user
 
-type Repository interface {
+type UserRepository interface {
 	Save(user User) error
 	FindByID(ID string) (User, error)
 	FindByEmailAddress(email string) (User, error)
