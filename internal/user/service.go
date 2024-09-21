@@ -10,6 +10,20 @@ func NewUserService(repo Repository) *UserService {
 	}
 }
 
+func (s *UserService) Create(username, email, password string, firstName string, lastName string) (User, error) {
+	u, err := NewUser(username, email, password, firstName, lastName)
+
+	if err != nil {
+		return User{}, err
+	}
+
+	if err := s.Register(u); err != nil {
+		return User{}, err
+	}
+
+	return u, nil
+}
+
 func (s *UserService) Register(u User) error {
 	return s.repo.Save(u)
 }
