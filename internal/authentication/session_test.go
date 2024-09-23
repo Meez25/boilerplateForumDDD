@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewSession(t *testing.T) {
-	session := NewSession()
+	session := NewSession("coucou@example.com")
 
 	if session.ID == uuid.Nil {
 		t.Error("NewSession devrait générer un ID non nul")
@@ -24,7 +24,7 @@ func TestNewSession(t *testing.T) {
 }
 
 func TestAddValue(t *testing.T) {
-	session := NewSession()
+	session := NewSession("coucou@example.com")
 	session.AddValue("test_key", "test_value")
 
 	if value, exists := session.keys["test_key"]; !exists || value != "test_value" {
@@ -33,7 +33,7 @@ func TestAddValue(t *testing.T) {
 }
 
 func TestDeleteValue(t *testing.T) {
-	session := NewSession()
+	session := NewSession("coucou@example.com")
 	session.AddValue("test_key", "test_value")
 	session.DeleteValue("test_key")
 
@@ -43,7 +43,7 @@ func TestDeleteValue(t *testing.T) {
 }
 
 func TestGetValue(t *testing.T) {
-	session := NewSession()
+	session := NewSession("coucou@example.com")
 	session.AddValue("test_key", "test_value")
 
 	if value := session.GetValue("test_key"); value != "test_value" {
@@ -56,7 +56,7 @@ func TestGetValue(t *testing.T) {
 }
 
 func TestIsValid(t *testing.T) {
-	session := NewSession()
+	session := NewSession("coucou@example.com")
 
 	if !session.IsValid() {
 		t.Error("Une nouvelle session devrait être valide")

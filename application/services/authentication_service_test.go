@@ -44,9 +44,9 @@ func (m *MockSessionRepository) Delete(id string) error {
 
 func TestCreateSession(t *testing.T) {
 	mockRepo := NewMockSessionRepository()
-	service := NewSessionService(mockRepo)
+	service := NewAuthenticationService(mockRepo)
 
-	session, err := service.CreateSession()
+	session, err := service.CreateSession("test@example.com")
 	if err != nil {
 		t.Errorf("Erreur inattendue lors de la création de la session : %v", err)
 	}
@@ -64,12 +64,11 @@ func TestCreateSession(t *testing.T) {
 
 func TestGetSessionByID(t *testing.T) {
 	mockRepo := NewMockSessionRepository()
-	service := NewSessionService(mockRepo)
+	service := NewAuthenticationService(mockRepo)
 
 	// Créer une session de test
-	testSession := authentication.NewSession()
+	testSession := authentication.NewSession("test@example.com")
 	testSession.ID = uuid.New()
-	testSession.Email = "test@example.com"
 	mockRepo.Save(*testSession)
 
 	// Test de récupération d'une session existante

@@ -15,9 +15,10 @@ type Session struct {
 	validUntil time.Time
 }
 
-func NewSession() *Session {
+func NewSession(emailID string) *Session {
 	return &Session{
 		ID:         uuid.New(),
+		Email:      emailID,
 		keys:       make(map[string]string),
 		validUntil: time.Now().Add(24 * time.Hour),
 	}

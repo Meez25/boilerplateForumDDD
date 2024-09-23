@@ -9,24 +9,24 @@ import (
 
 var ErrSessionNotFound = errors.New("Session not found")
 
-type SessionMemoryRepo struct {
+type AuthenticationMemoryRepo struct {
 	sessions map[string]authentication.Session
 	sync.Mutex
 }
 
-func NewSessionMemoryRepo() *SessionMemoryRepo {
-	return &SessionMemoryRepo{
+func NewSessionMemoryRepo() *AuthenticationMemoryRepo {
+	return &AuthenticationMemoryRepo{
 		sessions: make(map[string]authentication.Session),
 	}
 }
 
-func (sm *SessionMemoryRepo) Save(session authentication.Session) {
+func (sm *AuthenticationMemoryRepo) Save(session authentication.Session) {
 	sm.Lock()
 	sm.sessions[session.ID.String()] = session
 	sm.Unlock()
 }
 
-func (sm *SessionMemoryRepo) FindByID(id string) (authentication.Session, error) {
+func (sm *AuthenticationMemoryRepo) FindByID(id string) (authentication.Session, error) {
 	s, ok := sm.sessions[id]
 	if !ok {
 		return authentication.Session{}, ErrSessionNotFound
@@ -35,7 +35,7 @@ func (sm *SessionMemoryRepo) FindByID(id string) (authentication.Session, error)
 	return s, nil
 }
 
-func (sm *SessionMemoryRepo) Update(session authentication.Session) error {
+func (sm *AuthenticationMemoryRepo) Update(session authentication.Session) error {
 
 	sm.Lock()
 	sm.sessions[session.ID.String()] = session
@@ -43,7 +43,7 @@ func (sm *SessionMemoryRepo) Update(session authentication.Session) error {
 	return nil
 }
 
-func (sm *SessionMemoryRepo) Delete(id string) error {
+func (sm *AuthenticationMemoryRepo) Delete(id string) error {
 	sm.Lock()
 	delete(sm.sessions, id)
 	sm.Unlock()

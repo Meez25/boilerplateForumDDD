@@ -53,3 +53,7 @@ func NewUser(username, email, password, firstName, lastName string, profilePictu
 		CreatedAt:    time.Now(),
 	}, nil
 }
+
+func (u *User) CheckPassword(password string) bool {
+	return u.Password == password
+}
