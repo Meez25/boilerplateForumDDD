@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/google/uuid"
 	"github.com/meez25/boilerplateForumDDD/internal/user"
@@ -9,6 +10,7 @@ import (
 
 type UserMemoryRepository struct {
 	users map[uuid.UUID]user.User
+	sync.Mutex
 }
 
 var ErrUserNotFound = errors.New("user not found")
@@ -20,7 +22,9 @@ func NewUserMemoryRepository() *UserMemoryRepository {
 }
 
 func (r *UserMemoryRepository) Save(u user.User) error {
+	r.Lock()
 	r.users[u.ID] = u
+	r.Unlock()
 	return nil
 }
 
@@ -52,11 +56,15 @@ func (r *UserMemoryRepository) FindByUsername(username string) (user.User, error
 }
 
 func (r *UserMemoryRepository) Update(u user.User) error {
+	r.Lock()
 	r.users[u.ID] = u
+	r.Unlock()
 	return nil
 }
 
 func (r *UserMemoryRepository) Delete(ID string) error {
+	r.Lock()
 	delete(r.users, uuid.MustParse(ID))
+	r.Unlock()
 	return nil
 }

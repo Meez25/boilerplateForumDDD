@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/meez25/boilerplateForumDDD/internal/forum"
+	"sync"
 )
 
 var (
@@ -13,6 +14,7 @@ var (
 
 type CategoryMemoryRepo struct {
 	categories map[uuid.UUID]forum.Category
+	sync.Mutex
 }
 
 func NewCategoryMemoryRepo() *CategoryMemoryRepo {
@@ -22,7 +24,9 @@ func NewCategoryMemoryRepo() *CategoryMemoryRepo {
 }
 
 func (r *CategoryMemoryRepo) Save(category forum.Category) error {
+	r.Lock()
 	r.categories[category.ID] = category
+	r.Unlock()
 	return nil
 }
 
@@ -49,7 +53,9 @@ func (r *CategoryMemoryRepo) FindAll() ([]forum.Category, error) {
 }
 
 func (r *CategoryMemoryRepo) Update(category forum.Category) error {
+	r.Lock()
 	r.categories[category.ID] = category
+	r.Unlock()
 	return nil
 }
 
@@ -59,6 +65,8 @@ func (r *CategoryMemoryRepo) Delete(ID string) error {
 		return err
 	}
 
+	r.Lock()
 	delete(r.categories, id)
+	r.Unlock()
 	return nil
 }

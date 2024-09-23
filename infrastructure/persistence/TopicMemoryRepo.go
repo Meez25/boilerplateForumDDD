@@ -5,12 +5,14 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/meez25/boilerplateForumDDD/internal/forum"
+	"sync"
 )
 
 var ErrTopicNotFound = errors.New("ErrTopicNotFound")
 
 type TopicMemoryRepo struct {
 	topics map[uuid.UUID]forum.Topic
+	sync.Mutex
 }
 
 func NewTopicMemoryRepo() *TopicMemoryRepo {
@@ -20,7 +22,9 @@ func NewTopicMemoryRepo() *TopicMemoryRepo {
 }
 
 func (r *TopicMemoryRepo) Save(topic forum.Topic) error {
+	r.Lock()
 	r.topics[topic.ID] = topic
+	r.Unlock()
 	return nil
 }
 
@@ -43,11 +47,15 @@ func (r *TopicMemoryRepo) FindAll() ([]forum.Topic, error) {
 }
 
 func (r *TopicMemoryRepo) Update(topic forum.Topic) error {
+	r.Lock()
 	r.topics[topic.ID] = topic
+	r.Unlock()
 	return nil
 }
 
 func (r *TopicMemoryRepo) Delete(ID string) error {
+	r.Lock()
 	delete(r.topics, uuid.MustParse(ID))
+	r.Unlock()
 	return nil
 }
