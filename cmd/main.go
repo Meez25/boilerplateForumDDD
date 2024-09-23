@@ -9,7 +9,8 @@ import (
 
 func main() {
 	userRepo := persistence.NewUserMemoryRepository()
-	userService := services.NewUserService(userRepo)
+	userGroupRepo := persistence.NewUserGroupMemoryRepo()
+	userService := services.NewUserService(userRepo, userGroupRepo)
 
 	// Create a new user
 	newUser, err := userService.Create("John Doe", "johnDoe@doe.com", "password", "john", "doe", "profile.jpg")
@@ -115,5 +116,27 @@ func main() {
 	}
 
 	fmt.Println("Topic found by ID:", foundTopic)
+
+	// ----------------------------
+
+	// Create a user group
+
+	userGroup, err := userService.CreateGroup("Group 1", "Group description 1", newUser)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("User group created successfully")
+
+	// Find the user group by ID
+
+	foundUserGroup, err := userService.FindGroupByID(userGroup.ID.String())
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("User group found by ID:", foundUserGroup)
 
 }
