@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/meez25/boilerplateForumDDD/application/services"
@@ -8,14 +9,26 @@ import (
 )
 
 type HomeHandler struct {
-	sessionServer services.AuthenticationService
+	sessionService services.AuthenticationService
 }
 
 func NewHomeHandler(sessionServer services.AuthenticationService) *HomeHandler {
-	return &HomeHandler{sessionServer: sessionServer}
+	return &HomeHandler{sessionService: sessionServer}
 }
 
 func (h *HomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("sessionID")
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(cookie)
+		_, err := h.sessionService.GetSessionByID(cookie.Value)
+		if err != nil {
+			fmt.Println("La session n'existe plus")
+		}
+	}
+
 	// session, err := h.sessionServer.CreateSession("example@example.com")
 	// http.SetCookie(w, &http.Cookie{
 	// 	Name:     "sessionID",

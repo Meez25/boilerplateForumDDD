@@ -14,7 +14,7 @@ templ RegisterForm(errors map[string]string) {
 				<span class="block sm:inline">{ errors["general"] }</span>
 			</div>
 		}
-		<form hx-post="/register" hx-target="#register-form" hx-swap="outerHTML" class="mt-8 space-y-6">
+		<form hx-post="/inscription" hx-target="#register-form" hx-swap="outerHTML" class="mt-8 space-y-6">
 			<input type="hidden" name="remember" value="true"/>
 			<div class="rounded-md shadow-sm -space-y-px">
 				<div>

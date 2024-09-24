@@ -19,9 +19,8 @@ func NewMockSessionRepository() *MockSessionRepository {
 	}
 }
 
-func (m *MockSessionRepository) Save(session authentication.Session) error {
+func (m *MockSessionRepository) Save(session authentication.Session) {
 	m.sessions[session.ID.String()] = session
-	return nil
 }
 
 func (m *MockSessionRepository) FindByID(id string) (authentication.Session, error) {

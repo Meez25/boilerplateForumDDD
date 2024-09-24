@@ -1,8 +1,12 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/meez25/boilerplateForumDDD/internal/user"
 )
+
+var ErrPasswordConfirmError = errors.New("Password does not match")
 
 type UserService struct {
 	userRepo      user.UserRepository
@@ -16,7 +20,12 @@ func NewUserService(userRepo user.UserRepository, userGroupRepo user.UserGroupRe
 	}
 }
 
-func (s *UserService) Create(username, email, password string, firstName string, lastName string, profilePicture string) (user.User, error) {
+func (s *UserService) Create(username, email, password string, confirmPassword string, firstName string, lastName string, profilePicture string) (user.User, error) {
+
+	if password != confirmPassword {
+		return user.User{}, ErrPasswordConfirmError
+	}
+
 	u, err := user.NewUser(username, email, password, firstName, lastName, profilePicture)
 
 	if err != nil {

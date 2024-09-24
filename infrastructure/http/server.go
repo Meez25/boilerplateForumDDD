@@ -22,15 +22,22 @@ func StartServer() {
 	cfs := utils.CustomFileSystem{Fs: http.Dir("./ui")}
 	fs := http.FileServer(cfs)
 
-	// Intiate repo and services
+	// Initiate repo and services for Auth
 	authenticationRepository := persistence.NewSessionMemoryRepo()
 	authenticationService := services.NewAuthenticationService(authenticationRepository)
 
+	// Initiate repo and service for User and userGroup
+	userRepository := persistence.NewUserMemoryRepository()
+	userGroupRepository := persistence.NewUserGroupMemoryRepo()
+	userService := services.NewUserService(userRepository, userGroupRepository)
+
 	// Route handlers
 	r.Get("/", handlers.NewHomeHandler(*authenticationService).ServeHTTP)
-	r.Get("/connexion/", handlers.NewLoginPageHandler(*authenticationService).ServeHTTP)
-	r.Get("/inscription/", handlers.NewRegisterPageHandler(*authenticationService).ServeHTTP)
-	r.Post("/connexion/", handlers.NewLoginPageHandler(*authenticationService).ServeHTTP)
+	r.Get("/connexion", handlers.NewLoginPageHandler(*authenticationService).ServeHTTP)
+	r.Get("/inscription", handlers.NewRegisterPageHandler(*authenticationService).ServeHTTP)
+	r.Post("/inscription", handlers.NewRegisterHandler(*authenticationService, *userService).ServeHTTP)
+	r.Post("/connexion", handlers.NewLoginPageHandler(*authenticationService).ServeHTTP)
+	r.Get("/deconnexion", handlers.NewLogoutHandler(*authenticationService).ServeHTTP)
 	r.Get("/static/*", http.StripPrefix("/static", fs).ServeHTTP)
 
 	// Start server
