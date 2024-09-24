@@ -42,3 +42,7 @@ func (s *Session) GetValue(key string) string {
 func (s *Session) IsValid() bool {
 	return time.Now().Before(s.validUntil)
 }
+
+func (s *Session) GetValidUntil() time.Time {
+	return s.validUntil
+}
