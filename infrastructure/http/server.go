@@ -16,6 +16,7 @@ func StartServer() {
 
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(middleware.Compress(5, "text/html", "text/css"))
 
 	// Static files
 	cfs := utils.CustomFileSystem{Fs: http.Dir("./ui")}
@@ -28,6 +29,7 @@ func StartServer() {
 	// Route handlers
 	r.Get("/", handlers.NewHomeHandler(*authenticationService).ServeHTTP)
 	r.Get("/login/", handlers.NewLoginPageHandler(*authenticationService).ServeHTTP)
+	r.Post("/login/", handlers.NewLoginPageHandler(*authenticationService).ServeHTTP)
 	r.Get("/static/*", http.StripPrefix("/static", fs).ServeHTTP)
 
 	// Start server

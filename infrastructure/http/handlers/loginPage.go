@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/meez25/boilerplateForumDDD/application/services"
+	"github.com/meez25/boilerplateForumDDD/infrastructure/http/templates/auth"
 )
 
 type LoginPageHandler struct {
@@ -16,6 +16,5 @@ func NewLoginPageHandler(sessionServer services.AuthenticationService) *LoginPag
 }
 
 func (h *LoginPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	session, err := h.sessionServer.CreateSession("example@example.com")
-	fmt.Fprintf(w, "Hello, World! Your session is %v and error is %v", session, err)
+	auth.Login(map[string]string{}).Render(r.Context(), w)
 }
