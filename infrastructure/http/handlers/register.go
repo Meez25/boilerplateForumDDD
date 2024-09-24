@@ -40,6 +40,7 @@ func (h *RegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Secure:   true,
 		HttpOnly: true,
 		Path:     "/",
+		SameSite: http.SameSiteLaxMode,
 	})
 	fmt.Fprintf(w, "Hello, World! Your session is %v and error is %v", session, err)
 }

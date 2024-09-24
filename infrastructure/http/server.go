@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/meez25/boilerplateForumDDD/application/services"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/http/handlers"
+	mymiddleware "github.com/meez25/boilerplateForumDDD/infrastructure/http/middleware"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/http/utils"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/persistence"
 )
@@ -25,6 +26,10 @@ func StartServer() {
 	// Initiate repo and services for Auth
 	authenticationRepository := persistence.NewSessionMemoryRepo()
 	authenticationService := services.NewAuthenticationService(authenticationRepository)
+
+	authMiddlewareService := mymiddleware.NewAuthMiddlewareService(*authenticationService)
+
+	r.Use(authMiddlewareService.GetSessionInContext)
 
 	// Initiate repo and service for User and userGroup
 	userRepository := persistence.NewUserMemoryRepository()

@@ -8,7 +8,9 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func Index() templ.Component {
+import "github.com/meez25/boilerplateForumDDD/internal/authentication"
+
+func Index(session authentication.Session) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -41,7 +43,17 @@ func Index() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"container mx-auto mt-8 px-4\"><h1 class=\"text-3xl font-bold mb-4\">Welcome to Your Project</h1><p class=\"text-gray-600\">This is a boilerplate for your Go/Echo/HTMX/Templ project.</p><ul><li><a href=\"/connexion\">Login</a></li><li><a href=\"/inscription\">Inscription</a></li><li><a href=\"/forum\">Forum</a></li><li><a href=\"/compte\">Profil</a></li></ul></main>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"container mx-auto mt-8 px-4\"><h1 class=\"text-3xl font-bold mb-4\">Welcome to Your Project</h1><p class=\"text-gray-600\">This is a boilerplate for your Go/Echo/HTMX/Templ project.</p><ul>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if session.IsValid() {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li>Connecté</li>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a href=\"/connexion\">Login</a></li><li><a href=\"/inscription\">Inscription</a></li><li><a href=\"/forum\">Forum</a></li><li><a href=\"/compte\">Profil</a></li></ul></main>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
