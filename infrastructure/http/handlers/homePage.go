@@ -6,26 +6,22 @@ import (
 
 	"github.com/meez25/boilerplateForumDDD/application/services"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/http/templates"
+	"github.com/meez25/boilerplateForumDDD/internal/authentication"
 )
 
 type HomeHandler struct {
-	bh             BaseHandler
 	sessionService services.AuthenticationService
 }
 
 func NewHomeHandler(sessionService services.AuthenticationService) *HomeHandler {
 	return &HomeHandler{
-		bh:             *NewBaseHandler(sessionService),
 		sessionService: sessionService,
 	}
 }
 
 func (h *HomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	context := r.Context().Value("session")
+	context := r.Context().Value("session").(authentication.Session)
 	fmt.Println("context :", context)
-	session, _ := h.bh.GetSession(w, r)
 
-	fmt.Println("Session", session)
-
-	templates.Index(session).Render(r.Context(), w)
+	templates.Index(context).Render(r.Context(), w)
 }
