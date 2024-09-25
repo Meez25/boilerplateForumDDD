@@ -45,7 +45,7 @@ func (ss *AuthenticationService) Authenticate(email, password string) (authentic
 		return authentication.Session{}, err
 	}
 
-	_, err = user.CheckPassword(password)
+	_, err = user.Password.CheckPassword(password)
 
 	if err != nil {
 		return authentication.Session{}, ErrInvalidCredentials

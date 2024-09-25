@@ -5,6 +5,7 @@ import (
 
 	"github.com/meez25/boilerplateForumDDD/application/services"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/http/templates/auth"
+	"github.com/meez25/boilerplateForumDDD/infrastructure/persistence"
 )
 
 type LoginHandler struct {
@@ -29,6 +30,12 @@ func (h *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		switch err {
 		case services.ErrInvalidCredentials:
 			errors["general"] = "Le mot de passe est incorrect."
+		case persistence.ErrUserAlreadyExists:
+			errors["general"] = "L'utilisateur existe déjà."
+		case persistence.ErrDuplicateEmail:
+			errors["email"] = "L'adresse email est déjà utilisé"
+		case persistence.ErrDuplicateUsername:
+			errors["username"] = "Le nom d'utilisateur est déjà utilisé"
 		default:
 			errors["general"] = "Il y a eu une erreur"
 		}

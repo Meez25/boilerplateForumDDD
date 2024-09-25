@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/meez25/boilerplateForumDDD/application/services"
@@ -39,6 +40,7 @@ func (h *RegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	createdUser, err := h.userService.Create(username, email, password, confirmPassword, "firstName", "lastName", "PP")
 
 	if err != nil {
+		fmt.Println(err)
 		switch err {
 		case services.ErrPasswordConfirmError:
 			errors["confirm-password"] = "Les mots de passe ne correspondent pas"
@@ -49,6 +51,12 @@ func (h *RegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		case user.ErrEmptyPassword:
 			errors["username"] = "Le mot de passe ne peut pas être vide"
 		case persistence.ErrEmailAlreadyExists:
+			errors["email"] = "L'adresse email est déjà utilisée"
+		case persistence.ErrUserAlreadyExists:
+			errors["email"] = "L'utilisateur existe déjà"
+		case persistence.ErrDuplicateUsername:
+			errors["username"] = "Le nom d'utilisateur est déjà utilisé"
+		case persistence.ErrDuplicateEmail:
 			errors["email"] = "L'adresse email est déjà utilisée"
 		default:
 			errors["general"] = "Une erreur inattendue s'est produite. Veuillez réessayer."
