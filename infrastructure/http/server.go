@@ -26,7 +26,11 @@ func StartServer() {
 	// Initiate repo and services for Auth
 
 	// Initiate repo and service for User and userGroup
-	userRepository := persistence.NewUserMemoryRepository()
+	// userRepository := persistence.NewUserMemoryRepository()
+	db := persistence.NewSQLConnection()
+	defer db.Close()
+	userRepository := persistence.NewUserSQLRepository(db)
+
 	userGroupRepository := persistence.NewUserGroupMemoryRepo()
 	userService := services.NewUserService(userRepository, userGroupRepository)
 

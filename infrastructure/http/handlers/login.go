@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/meez25/boilerplateForumDDD/application/services"
@@ -19,11 +18,8 @@ func NewLoginHandler(sessionServer services.AuthenticationService) *LoginHandler
 }
 
 func (h *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Login handler")
 	email := r.FormValue("email")
 	password := r.FormValue("password")
-
-	fmt.Println(email, password)
 
 	errors := make(map[string]string)
 
@@ -36,11 +32,13 @@ func (h *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		default:
 			errors["general"] = "Il y a eu une erreur"
 		}
+
+		auth.LoginForm(errors).Render(r.Context(), w)
+		return
 	}
 
-	fmt.Println(user)
-
 	session, err := h.sessionServer.CreateSession(user.Email)
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "sessionID",
 		Value:    session.ID.String(),
@@ -49,5 +47,6 @@ func (h *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	})
 
-	auth.LoginForm(errors).Render(r.Context(), w)
+	w.Header().Add("HX-Redirect", "/")
+	http.Redirect(w, r, "/", http.StatusOK)
 }
