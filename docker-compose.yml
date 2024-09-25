@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      target: production
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  app-dev:
+    build:
+      context: .
+      target: development
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=yourdbname
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
