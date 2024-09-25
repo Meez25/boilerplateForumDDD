@@ -15,8 +15,9 @@ templ RegisterForm(errors map[string]string, values map[string]string) {
 			</div>
 		}
 		if values["general"] != "" {
-			<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-				<span class="block sm:inline">{ values["general"] }</span>
+			<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative flex flex-col" role="alert">
+				<p class="block sm:inline">{ values["general"] }</p>
+				<a href="/connexion" class="underline">Connectez-vous</a>
 			</div>
 		}
 		<form hx-post="/inscription" hx-target="#register-form" hx-swap="outerHTML" class="mt-8 space-y-6">

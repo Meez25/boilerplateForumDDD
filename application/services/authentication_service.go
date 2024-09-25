@@ -10,12 +10,13 @@ var ErrInvalidCredentials = errors.New("invalid credentials")
 
 type AuthenticationService struct {
 	sessionRepo authentication.SessionRepository
-	userService *UserService
+	userService UserService
 }
 
-func NewAuthenticationService(sessionRepo authentication.SessionRepository) *AuthenticationService {
+func NewAuthenticationService(sessionRepo authentication.SessionRepository, userService *UserService) *AuthenticationService {
 	return &AuthenticationService{
 		sessionRepo: sessionRepo,
+		userService: *userService,
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/meez25/boilerplateForumDDD/application/services"
+	"github.com/meez25/boilerplateForumDDD/infrastructure/http/templates/auth"
 )
 
 type LoginHandler struct {
@@ -12,12 +13,34 @@ type LoginHandler struct {
 }
 
 func NewLoginHandler(sessionServer services.AuthenticationService) *LoginHandler {
-	return &LoginHandler{sessionServer: sessionServer}
+	return &LoginHandler{
+		sessionServer: sessionServer,
+	}
 }
 
 func (h *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Login handler")
+	email := r.FormValue("email")
+	password := r.FormValue("password")
 
-	session, err := h.sessionServer.CreateSession("example@example.com")
+	fmt.Println(email, password)
+
+	errors := make(map[string]string)
+
+	user, err := h.sessionServer.Authenticate(email, password)
+
+	if err != nil {
+		switch err {
+		case services.ErrInvalidCredentials:
+			errors["general"] = "Le mot de passe est incorrect."
+		default:
+			errors["general"] = "Il y a eu une erreur"
+		}
+	}
+
+	fmt.Println(user)
+
+	session, err := h.sessionServer.CreateSession(user.Email)
 	http.SetCookie(w, &http.Cookie{
 		Name:     "sessionID",
 		Value:    session.ID.String(),
@@ -25,5 +48,6 @@ func (h *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Secure:   true,
 		HttpOnly: true,
 	})
-	fmt.Fprintf(w, "Your session is %v and error is %v", session, err)
+
+	auth.LoginForm(errors).Render(r.Context(), w)
 }

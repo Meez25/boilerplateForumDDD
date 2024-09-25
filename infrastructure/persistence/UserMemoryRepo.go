@@ -23,7 +23,6 @@ func NewUserMemoryRepository() *UserMemoryRepository {
 }
 
 func (r *UserMemoryRepository) Save(u user.User) error {
-	// Find by email address
 	user, _ := r.FindByEmailAddress(u.EmailAddress)
 
 	if user.EmailAddress != "" {
