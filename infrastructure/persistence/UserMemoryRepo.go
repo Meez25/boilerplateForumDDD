@@ -14,6 +14,7 @@ type UserMemoryRepository struct {
 }
 
 var ErrUserNotFound = errors.New("user not found")
+var ErrEmailAlreadyExists = errors.New("Email already exists")
 
 func NewUserMemoryRepository() *UserMemoryRepository {
 	return &UserMemoryRepository{
@@ -22,6 +23,13 @@ func NewUserMemoryRepository() *UserMemoryRepository {
 }
 
 func (r *UserMemoryRepository) Save(u user.User) error {
+	// Find by email address
+	user, _ := r.FindByEmailAddress(u.EmailAddress)
+
+	if user.EmailAddress != "" {
+		return ErrEmailAlreadyExists
+	}
+
 	r.Lock()
 	r.users[u.ID] = u
 	r.Unlock()

@@ -1,10 +1,12 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/meez25/boilerplateForumDDD/application/services"
+	"github.com/meez25/boilerplateForumDDD/infrastructure/http/templates/auth"
+	"github.com/meez25/boilerplateForumDDD/infrastructure/persistence"
+	"github.com/meez25/boilerplateForumDDD/internal/user"
 )
 
 type RegisterHandler struct {
@@ -25,22 +27,38 @@ func (h *RegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	confirmPassword := r.FormValue("confirm-password")
 
-	user, err := h.userService.Create(username, email, password, confirmPassword, "firstName", "lastName", "PP")
-
-	if err != nil {
-		fmt.Fprintf(w, "erreur %v !", err)
-		w.WriteHeader(http.StatusBadRequest)
+	errors := make(map[string]string)
+	// values := make(map[string]string)
+	values := map[string]string{
+		"username":         username,
+		"email":            email,
+		"password":         password,
+		"confirm-password": confirmPassword,
 	}
 
-	session, err := h.sessionService.CreateSession(user.EmailAddress)
-	http.SetCookie(w, &http.Cookie{
-		Name:     "sessionID",
-		Value:    session.ID.String(),
-		Expires:  session.GetValidUntil(),
-		Secure:   true,
-		HttpOnly: true,
-		Path:     "/",
-		SameSite: http.SameSiteLaxMode,
-	})
-	fmt.Fprintf(w, "Hello, World! Your session is %v and error is %v", session, err)
+	createdUser, err := h.userService.Create(username, email, password, confirmPassword, "firstName", "lastName", "PP")
+
+	if err != nil {
+		switch err {
+		case services.ErrPasswordConfirmError:
+			errors["confirm-password"] = "Les mots de passe ne correspondent pas"
+		case user.ErrEmptyEmail:
+			errors["email"] = "L'adresse email ne peut pas être vide"
+		case user.ErrEmptyUsername:
+			errors["username"] = "Le nom d'utilisateur ne peut pas être vide"
+		case user.ErrEmptyPassword:
+			errors["username"] = "Le mot de passe ne peut pas être vide"
+		case persistence.ErrEmailAlreadyExists:
+			errors["email"] = "L'adresse email est déjà utilisée"
+		default:
+			errors["general"] = "Une erreur inattendue s'est produite. Veuillez réessayer."
+		}
+	} else {
+		for k := range values {
+			delete(values, k)
+		}
+		values["general"] = "Bienvenue " + createdUser.Username + " !"
+	}
+
+	auth.RegisterForm(errors, values).Render(r.Context(), w)
 }
