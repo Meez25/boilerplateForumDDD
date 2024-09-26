@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/meez25/boilerplateForumDDD/application/services"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/http/handlers"
+	"github.com/meez25/boilerplateForumDDD/infrastructure/http/handlers/forum"
 	mymiddleware "github.com/meez25/boilerplateForumDDD/infrastructure/http/middleware"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/http/utils"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/persistence"
@@ -37,6 +38,9 @@ func StartServer() {
 	authenticationRepository := persistence.NewSessionMemoryRepo()
 	authenticationService := services.NewAuthenticationService(authenticationRepository, userService)
 
+	categoryRepository := persistence.NewCategoryMemoryRepo()
+	categoryService := services.NewCategoryService(categoryRepository)
+
 	authMiddlewareService := mymiddleware.NewAuthMiddlewareService(*authenticationService)
 
 	r.Use(authMiddlewareService.GetSessionInContext)
@@ -49,6 +53,8 @@ func StartServer() {
 	r.Post("/connexion", handlers.NewLoginHandler(*authenticationService).ServeHTTP)
 	r.Get("/deconnexion", handlers.NewLogoutHandler(*authenticationService).ServeHTTP)
 	r.Get("/static/*", http.StripPrefix("/static", fs).ServeHTTP)
+
+	r.Get("/forum", forum.NewForumPageHandler(*categoryService, *userService).ServeHTTP)
 
 	// Start server
 	http.ListenAndServe(":3000", r)

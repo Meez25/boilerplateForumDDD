@@ -1,12 +1,19 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/meez25/boilerplateForumDDD/internal/forum"
 )
 
 type CategoryService struct {
 	repo forum.CategoryRepository
+}
+
+type CategoryAndChildren struct {
+	forum.Category
+	Children []forum.Category
 }
 
 func NewCategoryService(repo forum.CategoryRepository) *CategoryService {
@@ -68,4 +75,31 @@ func (s *CategoryService) AddSubCategory(parentID, subCategoryID string) error {
 	}
 
 	return nil
+}
+
+func (s *CategoryService) GetAllCategoryAndChildren() ([]CategoryAndChildren, error) {
+	var categoriesAndChildren []CategoryAndChildren
+
+	categories, err := s.repo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, category := range categories {
+		if category.ParentID == nil {
+			categoriesAndChildren = append(categoriesAndChildren, CategoryAndChildren{
+				Category: category,
+			})
+		} else {
+			for i, cat := range categoriesAndChildren {
+				if cat.ID == *category.ParentID {
+					categoriesAndChildren[i].Children = append(categoriesAndChildren[i].Children, category)
+				}
+			}
+		}
+	}
+
+	fmt.Println("retrieve categories", categoriesAndChildren)
+
+	return categoriesAndChildren, nil
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/meez25/boilerplateForumDDD/internal/user"
 )
@@ -81,14 +82,19 @@ func (ur *UserSQLRepository) FindByID(ID string) (user.User, error) {
 }
 
 func (ur *UserSQLRepository) FindByEmailAddress(email string) (user.User, error) {
-	var user user.User
+	var u user.User
 
 	row := ur.conn.conn.QueryRow(context.Background(), `
         SELECT * from users WHERE email = $1
         `,
 		email)
-	row.Scan(&user.ID, &user.Username, &user.EmailAddress, &user.Password.Password, &user.FirstName, &user.LastName, &user.ProfilePic, &user.CreatedAt)
-	return user, nil
+	row.Scan(&u.ID, &u.Username, &u.EmailAddress, &u.Password.Password, &u.FirstName, &u.LastName, &u.ProfilePic, &u.CreatedAt)
+
+	if u.ID == uuid.Nil {
+		return user.User{}, fmt.Errorf("Not found")
+	}
+
+	return u, nil
 }
 
 func (ur *UserSQLRepository) FindByUsername(username string) (user.User, error) {
