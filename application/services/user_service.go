@@ -39,6 +39,26 @@ func (s *UserService) Create(username, email, password string, confirmPassword s
 	return u, nil
 }
 
+func (s *UserService) CreateAdmin(username, email, password string, confirmPassword string, firstName string, lastName string, admin bool) (user.User, error) {
+
+	if password != confirmPassword {
+		return user.User{}, ErrPasswordConfirmError
+	}
+
+	u, err := user.NewUser(username, email, password, firstName, lastName, "")
+	u.GiveSuperAdmin()
+
+	if err != nil {
+		return user.User{}, err
+	}
+
+	if err := s.Register(u); err != nil {
+		return user.User{}, err
+	}
+
+	return u, nil
+}
+
 func (s *UserService) Register(u user.User) error {
 	return s.userRepo.Save(u)
 }

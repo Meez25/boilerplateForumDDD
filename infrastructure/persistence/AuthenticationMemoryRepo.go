@@ -20,10 +20,11 @@ func NewSessionMemoryRepo() *AuthenticationMemoryRepo {
 	}
 }
 
-func (sm *AuthenticationMemoryRepo) Save(session authentication.Session) {
+func (sm *AuthenticationMemoryRepo) Save(session authentication.Session) error {
 	sm.Lock()
 	sm.sessions[session.ID.String()] = session
 	sm.Unlock()
+	return nil
 }
 
 func (sm *AuthenticationMemoryRepo) FindByID(id string) (authentication.Session, error) {

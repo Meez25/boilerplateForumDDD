@@ -38,7 +38,8 @@ func NewUserSQLRepository(conn *SQLConnection) *UserSQLRepository {
             first_name VARCHAR(50),
             last_name VARCHAR(50),
             profile_pic VARCHAR(255),
-            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+			superadmin BOOLEAN	
         );
     `)
 
@@ -53,8 +54,8 @@ func NewUserSQLRepository(conn *SQLConnection) *UserSQLRepository {
 
 func (ur *UserSQLRepository) Save(user user.User) error {
 	_, err := ur.conn.conn.Exec(context.Background(), `
-        INSERT INTO users VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-`, user.ID, user.Username, user.EmailAddress, user.Password.Password, user.FirstName, user.LastName, user.ProfilePic, user.CreatedAt)
+        INSERT INTO users VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+`, user.ID, user.Username, user.EmailAddress, user.Password.Password, user.FirstName, user.LastName, user.ProfilePic, user.CreatedAt, user.SuperAdmin)
 
 	if err != nil {
 		var pgErr *pgconn.PgError
@@ -88,7 +89,7 @@ func (ur *UserSQLRepository) FindByEmailAddress(email string) (user.User, error)
         SELECT * from users WHERE email = $1
         `,
 		email)
-	row.Scan(&u.ID, &u.Username, &u.EmailAddress, &u.Password.Password, &u.FirstName, &u.LastName, &u.ProfilePic, &u.CreatedAt)
+	row.Scan(&u.ID, &u.Username, &u.EmailAddress, &u.Password.Password, &u.FirstName, &u.LastName, &u.ProfilePic, &u.CreatedAt, &u.SuperAdmin)
 
 	if u.ID == uuid.Nil {
 		return user.User{}, fmt.Errorf("Not found")

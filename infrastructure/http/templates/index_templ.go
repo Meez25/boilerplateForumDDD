@@ -48,7 +48,7 @@ func Index(session authentication.Session) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if session.IsValid() {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li>Connecté</li><li><a href=\"/deconnexion\">Déconnexion</a></li><li><a href=\"/compte\">Profil</a></li>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li>Connecté</li><li><a href=\"/deconnexion\">Déconnexion</a></li><li><a href=\"/compte\">Profil</a></li><li><a href=\"/admin\">Administration</a></li>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

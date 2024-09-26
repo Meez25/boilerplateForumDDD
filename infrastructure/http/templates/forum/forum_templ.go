@@ -57,7 +57,7 @@ func ForumHeader(user *user.User) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a href=\"/connexion\" class=\"hover:underline\">Connexion</a></li><li><a href=\"/enregistrement\" class=\"hover:underline\">S'enregister</a></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a href=\"/connexion\" class=\"hover:underline\">Connexion</a></li><li><a href=\"/inscription\" class=\"hover:underline\">S'enregister</a></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

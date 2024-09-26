@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/meez25/boilerplateForumDDD/application/services"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/http/handlers"
+	"github.com/meez25/boilerplateForumDDD/infrastructure/http/handlers/admin"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/http/handlers/forum"
 	mymiddleware "github.com/meez25/boilerplateForumDDD/infrastructure/http/middleware"
 	"github.com/meez25/boilerplateForumDDD/infrastructure/http/utils"
@@ -35,7 +36,8 @@ func StartServer() {
 	userGroupRepository := persistence.NewUserGroupMemoryRepo()
 	userService := services.NewUserService(userRepository, userGroupRepository)
 
-	authenticationRepository := persistence.NewSessionMemoryRepo()
+	// authenticationRepository := persistence.NewSessionMemoryRepo()
+	authenticationRepository := persistence.NewAuthenticationSQLRepository(db)
 	authenticationService := services.NewAuthenticationService(authenticationRepository, userService)
 
 	categoryRepository := persistence.NewCategoryMemoryRepo()
@@ -55,6 +57,8 @@ func StartServer() {
 	r.Get("/static/*", http.StripPrefix("/static", fs).ServeHTTP)
 
 	r.Get("/forum", forum.NewForumPageHandler(*categoryService, *userService).ServeHTTP)
+	r.Get("/admin", admin.NewAdminPageHandler(*categoryService, *userService).ServeHTTP)
+	r.Get("/admin/categories", admin.NewAdminCategoryPageHandler(*categoryService, *userService).ServeHTTP)
 
 	// Start server
 	http.ListenAndServe(":3000", r)

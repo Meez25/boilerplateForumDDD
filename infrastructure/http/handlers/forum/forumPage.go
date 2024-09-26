@@ -29,10 +29,7 @@ func (fp *ForumPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	context := r.Context().Value("session").(authentication.Session)
-
 	user, err := fp.userService.FindByEmailAddress(context.Email)
-
-	fmt.Println(user)
 
 	if err != nil {
 		forum.Forum(categories, nil).Render(r.Context(), w)

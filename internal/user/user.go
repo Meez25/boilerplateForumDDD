@@ -16,6 +16,7 @@ type User struct {
 	LastName     string
 	ProfilePic   string
 	CreatedAt    time.Time
+	SuperAdmin   bool
 }
 
 var (
@@ -50,6 +51,7 @@ func NewUser(username, email, password, firstName, lastName string, profilePictu
 		ProfilePic:   profilePicture,
 		LastName:     lastName,
 		CreatedAt:    time.Now(),
+		SuperAdmin:   false,
 	}
 
 	user.setPassword(password)
@@ -61,4 +63,12 @@ func (u *User) setPassword(password string) {
 	encryptedPassword, _ := generateFromPassword(password)
 
 	u.Password = Password{Password: encryptedPassword}
+}
+
+func (u *User) GiveSuperAdmin() {
+	u.SuperAdmin = true
+}
+
+func (u *User) RemoveSuperAdmin() {
+	u.SuperAdmin = false
 }
