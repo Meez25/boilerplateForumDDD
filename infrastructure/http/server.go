@@ -59,6 +59,7 @@ func StartServer() {
 	r.Get("/forum", forum.NewForumPageHandler(*categoryService, *userService).ServeHTTP)
 	r.Get("/admin", admin.NewAdminPageHandler(*categoryService, *userService).ServeHTTP)
 	r.Get("/admin/categories", admin.NewAdminCategoryPageHandler(*categoryService, *userService).ServeHTTP)
+	r.Post("/admin/categories", admin.NewAdminCategoryHandler(*categoryService, *userService).ServeHTTP)
 
 	// Start server
 	http.ListenAndServe(":3000", r)

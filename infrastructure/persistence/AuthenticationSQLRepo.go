@@ -89,5 +89,13 @@ func (ar *AuthenticationSQLRepository) Update(authentication.Session) error {
 }
 
 func (ar *AuthenticationSQLRepository) Delete(ID string) error {
+	_, err := ar.conn.conn.Exec(context.Background(), `
+        DELETE FROM sessions WHERE id = $1
+`, ID)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
