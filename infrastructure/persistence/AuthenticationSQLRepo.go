@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/meez25/boilerplateForumDDD/internal/authentication"
 )
@@ -25,9 +26,9 @@ func NewAuthenticationSQLRepository(conn *SQLConnection) *AuthenticationSQLRepos
     CREATE TABLE IF NOT EXISTS sessions
         (
             id UUID PRIMARY KEY,
-            email VARCHAR(100) UNIQUE NOT NULL,
+            email VARCHAR(100) NOT NULL,
             userid VARCHAR(100) NOT NULL,
-            username VARCHAR(50) UNIQUE NOT NULL,
+            username VARCHAR(50) NOT NULL,
             valid_until TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
     `)
@@ -68,7 +69,19 @@ func (ar *AuthenticationSQLRepository) Save(session authentication.Session) erro
 }
 
 func (ar *AuthenticationSQLRepository) FindByID(ID string) (authentication.Session, error) {
-	return authentication.Session{}, nil
+	var s authentication.Session
+
+	row := ar.conn.conn.QueryRow(context.Background(), `
+        SELECT * from sessions WHERE id = $1
+        `,
+		ID)
+	row.Scan(&s.ID, &s.Email, &s.UserID, &s.Username, &s.ValidUntil)
+
+	if s.ID == uuid.Nil {
+		return authentication.Session{}, fmt.Errorf("Not found")
+	}
+
+	return s, nil
 }
 
 func (ar *AuthenticationSQLRepository) Update(authentication.Session) error {

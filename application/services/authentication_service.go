@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/meez25/boilerplateForumDDD/internal/authentication"
+	"github.com/meez25/boilerplateForumDDD/internal/user"
 )
 
 var ErrInvalidCredentials = errors.New("invalid credentials")
@@ -20,8 +21,8 @@ func NewAuthenticationService(sessionRepo authentication.SessionRepository, user
 	}
 }
 
-func (ss *AuthenticationService) CreateSession(email string) (authentication.Session, error) {
-	session := authentication.NewSession(email)
+func (ss *AuthenticationService) CreateSession(user user.User) (authentication.Session, error) {
+	session := authentication.NewSession(user.EmailAddress, user.ID, user.Username)
 
 	ss.sessionRepo.Save(*session)
 
@@ -51,7 +52,7 @@ func (ss *AuthenticationService) Authenticate(email, password string) (authentic
 		return authentication.Session{}, ErrInvalidCredentials
 	}
 
-	session := authentication.NewSession(email)
+	session := authentication.NewSession(user.EmailAddress, user.ID, user.Username)
 
 	ss.sessionRepo.Save(*session)
 

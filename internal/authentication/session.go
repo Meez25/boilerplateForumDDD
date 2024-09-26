@@ -9,18 +9,20 @@ import (
 type Session struct {
 	ID         uuid.UUID
 	Email      string
-	UserID     string
+	UserID     uuid.UUID
 	Username   string
 	keys       map[string]string
-	validUntil time.Time
+	ValidUntil time.Time
 }
 
-func NewSession(emailID string) *Session {
+func NewSession(email string, userID uuid.UUID, username string) *Session {
 	return &Session{
 		ID:         uuid.New(),
-		Email:      emailID,
+		Email:      email,
+		UserID:     userID,
+		Username:   username,
 		keys:       make(map[string]string),
-		validUntil: time.Now().Add(24 * time.Hour),
+		ValidUntil: time.Now().Add(24 * time.Hour),
 	}
 }
 
@@ -40,9 +42,9 @@ func (s *Session) GetValue(key string) string {
 }
 
 func (s *Session) IsValid() bool {
-	return time.Now().Before(s.validUntil)
+	return time.Now().Before(s.ValidUntil)
 }
 
 func (s *Session) GetValidUntil() time.Time {
-	return s.validUntil
+	return s.ValidUntil
 }

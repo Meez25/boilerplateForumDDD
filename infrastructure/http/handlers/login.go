@@ -24,7 +24,7 @@ func (h *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	errors := make(map[string]string)
 
-	user, err := h.sessionServer.Authenticate(email, password)
+	session, err := h.sessionServer.Authenticate(email, password)
 
 	if err != nil {
 		switch err {
@@ -43,8 +43,6 @@ func (h *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		auth.LoginForm(errors).Render(r.Context(), w)
 		return
 	}
-
-	session, err := h.sessionServer.CreateSession(user.Email)
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "sessionID",

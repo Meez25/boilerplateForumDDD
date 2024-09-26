@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/meez25/boilerplateForumDDD/application/services"
@@ -21,7 +20,6 @@ func NewHomeHandler(sessionService services.AuthenticationService) *HomeHandler 
 
 func (h *HomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	context := r.Context().Value("session").(authentication.Session)
-	fmt.Println("context :", context)
 
 	templates.Index(context).Render(r.Context(), w)
 }
